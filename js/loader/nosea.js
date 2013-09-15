@@ -37,7 +37,7 @@ seajs || (function () {
   };
 
   BUI.use = function(ids,factory){
-    if(ids)
+    
   };
 
 })();
