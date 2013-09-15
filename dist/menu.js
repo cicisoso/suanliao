@@ -26,261 +26,6 @@ define('bui/menu',['bui/common','bui/menu/menu','bui/menu/menuitem','bui/memu/co
   return Menu;
 });
 /**
- * @fileOverview 弹出菜单，一般用于右键菜单
- * @author dxq613@gmail.com
- * @ignore
- */
-
-define('bui/memu/contextmenu',['bui/common','bui/menu/menuitem','bui/menu/popmenu'],function (require) {
-
-  var BUI = require('bui/common'),
-    MenuItem = require('bui/menu/menuitem'),
-    PopMenu = require('bui/menu/popmenu'),
-    PREFIX = BUI.prefix,
-    CLS_Link = PREFIX + 'menu-item-link',
-    CLS_ITEM_ICON =  PREFIX + 'menu-item-icon',
-    Component = BUI.Component,
-    UIBase = Component.UIBase;
-
-  /**
-   * 上下文菜单项
-   * xclass:'context-menu-item'
-   * @class BUI.Menu.ContextMenuItem 
-   * @extends BUI.Menu.MenuItem
-   */
-  var contextMenuItem = MenuItem.extend({
-   
-    bindUI:function(){
-      var _self = this;
-
-      _self.get('el').delegate('.' + CLS_Link,'click',function(ev){
-        ev.preventDefault();
-      });
-    }, 
-    //设置图标样式
-    _uiSetIconCls : function (v,ev) {
-      var _self = this,
-        preCls = ev.prevVal,
-        iconEl = _self.get('el').find('.'+CLS_ITEM_ICON);
-      iconEl.removeClass(preCls);
-      iconEl.addClass(v);
-    }
-  },{
-
-    ATTRS:
-    /**
-     * @lends BUI.Menu.MenuItem#
-     * @ignore
-     */
-    {
-      /**
-       * 显示的文本
-       * @type {String}
-       */
-      text:{
-        veiw:true,
-        value:''
-      },
-      /**
-       * 菜单项图标的样式
-       * @type {String}
-       */
-      iconCls:{
-        sync:false,
-        value:''
-      },
-      tpl:{
-        value:'<a class="' + CLS_Link + '" href="#">\
-        <span class="' + CLS_ITEM_ICON + ' {iconCls}"></span><span class="' + PREFIX + 'menu-item-text">{text}</span></a>'
-      }
-    }
-  },{
-    xclass:'context-menu-item'
-  });
-
-  /**
-   * 上下文菜单，一般用于弹出菜单
-   * xclass:'context-menu'
-   * @class BUI.Menu.ContextMenu
-   * @extends BUI.Menu.PopMenu
-   */
-  var contextMenu = PopMenu.extend({
-
-  },{
-    ATTRS:{
-      /**
-       * 子类的默认类名，即类的 xclass
-       * @type {String}
-       * @override
-       * @default 'menu-item'
-       */
-      defaultChildClass : {
-        value : 'context-menu-item'
-      },
-      align : {
-        value : null
-      }
-    }
-  },{
-    xclass:'context-menu'
-  });
-
-  contextMenu.Item = contextMenuItem;
-  return contextMenu;
-});
-
-/**
- * @fileOverview 菜单基类
- * @author dxq613@gmail.com
- * @ignore
- */
-
-define('bui/menu/menu',['bui/common'],function(require){
-
-  var BUI = require('bui/common'),
-    Component =  BUI.Component,
-    UIBase = Component.UIBase;
-
-  /**
-   * 菜单
-   * xclass:'menu'
-   * <img src="../assets/img/class-menu.jpg"/>
-   * @class BUI.Menu.Menu
-   * @extends BUI.Component.Controller
-   * @mixins BUI.Component.UIBase.ChildList
-   */
-  var Menu = Component.Controller.extend([UIBase.ChildList],{
-	  /**
-     * 绑定事件
-     * @protected
-     */
-	  bindUI:function(){
-      var _self = this;
-
-      _self.on('click',function(e){
-        var item = e.target,
-          multipleSelect = _self.get('multipleSelect');
-        if(_self != item){
-          //单选情况下，允许自动隐藏，且没有子菜单的情况下，菜单隐藏
-          if(!multipleSelect && _self.get('clickHide') && !item.get('subMenu')){
-            _self.getTopAutoHideMenu().hide();
-          }
-        }
-      });
-
-      _self.on('afterOpenChange',function (ev) {
-        var target = ev.target,
-          opened = ev.newVal,
-          children = _self.get('children');
-        if(opened){
-          BUI.each(children,function(item) {
-            if(item !== target && item.get('open')){
-              item.set('open',false);
-            }
-          });
-        }
-      });
-
-      _self.on('afterVisibleChange',function (ev) {
-        var visible = ev.newVal,
-          parent = _self.get('parentMenu');
-        _self._clearOpen();
-      });
-    },
-   
-    //点击自动隐藏时
-    getTopAutoHideMenu : function() {
-      var _self = this,
-        parentMenu = _self.get('parentMenu'),
-        topHideMenu;
-      if(parentMenu && parentMenu.get('autoHide')){
-        return parentMenu.getTopAutoHideMenu();
-      }
-      if(_self.get('autoHide')){
-        return _self;
-      }
-      return null;
-    },
-    //清除菜单项的激活状态
-    _clearOpen : function () {
-      var _self = this,
-        children = _self.get('children');
-      BUI.each(children,function (item) {
-        if(item.set){
-          item.set('open',false);
-        }
-      });
-    },
-    /**
-     * 根据ID查找菜单项
-     * @param  {String} id 编号
-     * @return {BUI.Menu.MenuItem} 菜单项
-     */
-    findItemById : function(id){ 
-
-      return this.findItemByField('id',id);
-    },
-    _uiSetSelectedItem : function(item){
-      if(item){
-        _self.setSelected(item);
-      }
-    }
-  },{
-    ATTRS:
-    /**
-     * @lends BUI.Menu.Menu#
-     * @ignore
-     */
-    {
-
-      elTagName:{
-        view : true,
-        value : 'ul'
-      },
-		  idField:{
-        value:'id'
-      },
-      /**
-       * @protected
-       * 是否根据DOM生成子控件
-       * @type {Boolean}
-       */
-      isDecorateChild : {
-        value : true
-      },
-      /**
-       * 子类的默认类名，即类的 xclass
-       * @type {String}
-       * @default 'menu-item'
-       */
-      defaultChildClass : {
-        value : 'menu-item'
-      },
-      /**
-       * 选中的菜单项
-       * @type {Object}
-       */
-      selectedItem : {
-
-      },
-      /**
-       * 上一级菜单
-       * @type {BUI.Menu.Menu}
-       * @readOnly
-       */
-      parentMenu : {
-
-      }
-    }
-    
-  },{
-    xclass : 'menu',
-    priority : 0
-  });
-
-  return Menu;
-});
-/**
  * @fileOverview 菜单项
  * @ignore
  */
@@ -530,6 +275,157 @@ define('bui/menu/menuitem',['bui/common'],function(require){
   return menuItem;
 });
 /**
+ * @fileOverview 菜单基类
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+
+define('bui/menu/menu',['bui/common'],function(require){
+
+  var BUI = require('bui/common'),
+    Component =  BUI.Component,
+    UIBase = Component.UIBase;
+
+  /**
+   * 菜单
+   * xclass:'menu'
+   * <img src="../assets/img/class-menu.jpg"/>
+   * @class BUI.Menu.Menu
+   * @extends BUI.Component.Controller
+   * @mixins BUI.Component.UIBase.ChildList
+   */
+  var Menu = Component.Controller.extend([UIBase.ChildList],{
+	  /**
+     * 绑定事件
+     * @protected
+     */
+	  bindUI:function(){
+      var _self = this;
+
+      _self.on('click',function(e){
+        var item = e.target,
+          multipleSelect = _self.get('multipleSelect');
+        if(_self != item){
+          //单选情况下，允许自动隐藏，且没有子菜单的情况下，菜单隐藏
+          if(!multipleSelect && _self.get('clickHide') && !item.get('subMenu')){
+            _self.getTopAutoHideMenu().hide();
+          }
+        }
+      });
+
+      _self.on('afterOpenChange',function (ev) {
+        var target = ev.target,
+          opened = ev.newVal,
+          children = _self.get('children');
+        if(opened){
+          BUI.each(children,function(item) {
+            if(item !== target && item.get('open')){
+              item.set('open',false);
+            }
+          });
+        }
+      });
+
+      _self.on('afterVisibleChange',function (ev) {
+        var visible = ev.newVal,
+          parent = _self.get('parentMenu');
+        _self._clearOpen();
+      });
+    },
+   
+    //点击自动隐藏时
+    getTopAutoHideMenu : function() {
+      var _self = this,
+        parentMenu = _self.get('parentMenu'),
+        topHideMenu;
+      if(parentMenu && parentMenu.get('autoHide')){
+        return parentMenu.getTopAutoHideMenu();
+      }
+      if(_self.get('autoHide')){
+        return _self;
+      }
+      return null;
+    },
+    //清除菜单项的激活状态
+    _clearOpen : function () {
+      var _self = this,
+        children = _self.get('children');
+      BUI.each(children,function (item) {
+        if(item.set){
+          item.set('open',false);
+        }
+      });
+    },
+    /**
+     * 根据ID查找菜单项
+     * @param  {String} id 编号
+     * @return {BUI.Menu.MenuItem} 菜单项
+     */
+    findItemById : function(id){ 
+
+      return this.findItemByField('id',id);
+    },
+    _uiSetSelectedItem : function(item){
+      if(item){
+        _self.setSelected(item);
+      }
+    }
+  },{
+    ATTRS:
+    /**
+     * @lends BUI.Menu.Menu#
+     * @ignore
+     */
+    {
+
+      elTagName:{
+        view : true,
+        value : 'ul'
+      },
+		  idField:{
+        value:'id'
+      },
+      /**
+       * @protected
+       * 是否根据DOM生成子控件
+       * @type {Boolean}
+       */
+      isDecorateChild : {
+        value : true
+      },
+      /**
+       * 子类的默认类名，即类的 xclass
+       * @type {String}
+       * @default 'menu-item'
+       */
+      defaultChildClass : {
+        value : 'menu-item'
+      },
+      /**
+       * 选中的菜单项
+       * @type {Object}
+       */
+      selectedItem : {
+
+      },
+      /**
+       * 上一级菜单
+       * @type {BUI.Menu.Menu}
+       * @readOnly
+       */
+      parentMenu : {
+
+      }
+    }
+    
+  },{
+    xclass : 'menu',
+    priority : 0
+  });
+
+  return Menu;
+});
+/**
  * @fileOverview 下拉菜单，一般用于下拉显示菜单
  * @author dxq613@gmail.com
  * @ignore
@@ -598,6 +494,110 @@ define('bui/menu/popmenu',['bui/common','bui/menu/menu'],function (require) {
   return popMenu;
 
 });
+/**
+ * @fileOverview 弹出菜单，一般用于右键菜单
+ * @author dxq613@gmail.com
+ * @ignore
+ */
+
+define('bui/memu/contextmenu',['bui/common','bui/menu/menuitem','bui/menu/popmenu'],function (require) {
+
+  var BUI = require('bui/common'),
+    MenuItem = require('bui/menu/menuitem'),
+    PopMenu = require('bui/menu/popmenu'),
+    PREFIX = BUI.prefix,
+    CLS_Link = PREFIX + 'menu-item-link',
+    CLS_ITEM_ICON =  PREFIX + 'menu-item-icon',
+    Component = BUI.Component,
+    UIBase = Component.UIBase;
+
+  /**
+   * 上下文菜单项
+   * xclass:'context-menu-item'
+   * @class BUI.Menu.ContextMenuItem 
+   * @extends BUI.Menu.MenuItem
+   */
+  var contextMenuItem = MenuItem.extend({
+   
+    bindUI:function(){
+      var _self = this;
+
+      _self.get('el').delegate('.' + CLS_Link,'click',function(ev){
+        ev.preventDefault();
+      });
+    }, 
+    //设置图标样式
+    _uiSetIconCls : function (v,ev) {
+      var _self = this,
+        preCls = ev.prevVal,
+        iconEl = _self.get('el').find('.'+CLS_ITEM_ICON);
+      iconEl.removeClass(preCls);
+      iconEl.addClass(v);
+    }
+  },{
+
+    ATTRS:
+    /**
+     * @lends BUI.Menu.MenuItem#
+     * @ignore
+     */
+    {
+      /**
+       * 显示的文本
+       * @type {String}
+       */
+      text:{
+        veiw:true,
+        value:''
+      },
+      /**
+       * 菜单项图标的样式
+       * @type {String}
+       */
+      iconCls:{
+        sync:false,
+        value:''
+      },
+      tpl:{
+        value:'<a class="' + CLS_Link + '" href="#">\
+        <span class="' + CLS_ITEM_ICON + ' {iconCls}"></span><span class="' + PREFIX + 'menu-item-text">{text}</span></a>'
+      }
+    }
+  },{
+    xclass:'context-menu-item'
+  });
+
+  /**
+   * 上下文菜单，一般用于弹出菜单
+   * xclass:'context-menu'
+   * @class BUI.Menu.ContextMenu
+   * @extends BUI.Menu.PopMenu
+   */
+  var contextMenu = PopMenu.extend({
+
+  },{
+    ATTRS:{
+      /**
+       * 子类的默认类名，即类的 xclass
+       * @type {String}
+       * @override
+       * @default 'menu-item'
+       */
+      defaultChildClass : {
+        value : 'context-menu-item'
+      },
+      align : {
+        value : null
+      }
+    }
+  },{
+    xclass:'context-menu'
+  });
+
+  contextMenu.Item = contextMenuItem;
+  return contextMenu;
+});
+
 /**
  * @fileOverview 侧边栏菜单
  * @author dxq613@gmail.com

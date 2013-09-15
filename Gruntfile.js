@@ -53,76 +53,142 @@ module.exports = function(grunt) {
 			dest: 'dist/calendar.js'
 		},
     	uimixins_tmp: {
-	    	src: ['js/common/component/uibase/*.js'],
-	    	dest: 'js/common/tmp/uimixins.js'
+	    	src: [
+	    		'js/common/component/uibase/base.js',
+	    		'js/common/component/uibase/align.js',
+	    		'js/common/component/uibase/autoshow.js',
+	    		'js/common/component/uibase/autohide.js',
+	    		'js/common/component/uibase/close.js',
+	    		'js/common/component/uibase/drag.js',
+	    		'js/common/component/uibase/keynav.js',
+	    		'js/common/component/uibase/mask.js',
+	    		'js/common/component/uibase/position.js',
+	    		'js/common/component/uibase/listitem.js',
+	    		'js/common/component/uibase/stdmod.js',
+	    		'js/common/component/uibase/decorate.js',
+	    		'js/common/component/uibase/tpl.js',
+	    		'js/common/component/uibase/collapseable.js',
+	    		'js/common/component/uibase/selection.js',
+	    		'js/common/component/uibase/list.js',
+	    		'js/common/component/uibase/childcfg.js',
+	    		'js/common/component/uibase/depends.js',
+	    		'js/common/component/uibase/bindable.js'
+	    	],
+	    	dest: 'js/common/component/uimixins.js'
 	    },
-	    component_tmp: {
-	    	src: ['js/common/tmp/uimixins.js', 'js/common/component/*.js'],
-	    	dest: 'js/common/tmp/component.js'	
+	    component: {
+	    	src: [
+	    		'js/common/component/manage.js',
+	    		'js/common/component/uibase.js',
+	    		'js/common/component/uimixins.js', 
+	    		'js/common/component/view.js',
+	    		'js/common/component/loader.js',
+	    		'js/common/component/controller.js'
+	    	],
+	    	dest: 'js/common/component-tmp.js'	
 	    },
 	    common: {
-	    	src: ['js/common/common.js', 'js/common/util.js', 'js/common/array.js', 'js/common/observable.js', 'js/common/ua.js', 'js/common/json.js', 'keycode.js', 'date.js', 'base.js', 'js/common/tmp/component.js'],
+	    	src: [
+	    		'js/common/common.js', 
+	    		'js/common/util.js', 
+	    		'js/common/array.js', 
+	    		'js/common/observable.js', 
+	    		'js/common/ua.js', 
+	    		'js/common/json.js', 
+	    		'js/common/keycode.js', 
+	    		'js/common/date.js', 
+	    		'js/common/base.js', 
+	    		'js/common/component.js',
+	    		'js/common/component-tmp.js'
+	    	],
 	    	dest: 'dist/common.js'
 	    },
 	    tree : {
           src: [
-            'js/tree/*.js'
+            'js/tree/base.js',
+            'js/tree/treemixin.js',
+            'js/tree/treelist.js'
           ],
           dest: 'dist/tree.js'
         },
 
         tooltip : {
             src: [
-              'js/tooltip/*.js'
+              'js/tooltip/base.js',
+              'js/tooltip/tip.js',
+              'js/tooltip/tips.js',
             ],
             dest: 'dist/tooltip.js'
         },
         
         tab : {
             src: [
-              'js/tab/*.js'
+              'js/tab/base.js',
+              'js/tab/navtabitem.js',
+              'js/tab/navtab.js',
+              'js/tab/tabitem.js',
+              'js/tab/tab.js',
+              'js/tab/tabpanelitem.js',
+              'js/tab/tabpanel.js',
             ],
             dest: 'dist/tab.js'
         },
         
         select : {
             src: [
-              'jslect/*.js'
+              'js/select/base.js',
+              'js/select/select.js',
+              'js/select/combox.js',
+              'js/select/suggest.js'
             ],
             dest: 'distlect.js'
         },
         
         progressbar : {
             src: [
-              'js/progressbar/*.js'
+              'js/progressbar/base.js',
+              'js/progressbar/progressbar.js',
+              'js/progressbar/loadprogressbar.js'
             ],
             dest: 'dist/progressbar.js'
         },
  
         picker : {
             src: [
-              'js/picker/*.js'
+            	'js/picker/base.js',
+              	'js/picker/picker.js',
+              	'js/picker/listpicker.js'
             ],
             dest: 'dist/picker.js'
         },
 
         overlay : {
             src: [
-              'js/overlay/*.js'
+              'js/overlay/base.js',
+              'js/overlay/overlay.js',
+              'js/overlay/dialog.js',
+              'js/overlay/message.js',
             ],
             dest: 'dist/overlay.js'
         },
         
         menu : {
             src: [
-              'js/menu/*.js'
+              'js/menu/base.js',
+              'js/menu/menuitem.js',
+              'js/menu/menu.js',
+              'js/menu/popmenu.js',
+              'js/menu/contextmenu.js',
+              'js/menu/sidemenu.js'
             ],
             dest: 'dist/menu.js'
         },
         
         mask : {
             src: [
-              'js/mask/*.js'
+              'js/mask/base.js',
+              'js/mask/mask.js',
+              'js/mask/loadMask.js',
             ],
             dest: 'dist/mask.js'
         }, 
@@ -130,54 +196,140 @@ module.exports = function(grunt) {
         
         loader : {
             src: [
-              'js/loader/*.js'
+              'js/loader/sea.js',
+              'js/loader/seajs-cfg.js'
             ],
             dest: 'dist/loader.js'
         }, 
  
         list : {
             src: [
-              'jsst/*.js'
+              'js/list/base.js',
+              'js/list/domlist.js',
+              'js/list/keynav.js',
+              'js/list/simplelist.js',
+              'js/list/listbox.js',
+              'js/list/listitem.js',
+              'js/list/list.js',
             ],
-            dest: 'distst.js'
+            dest: 'dist/list.js'
         }, 
 
         grid : {
             src: [
-              'js/grid/*.js'
+              'js/grid/base.js',
+              'js/grid/simplegrid.js',
+              'js/grid/column.js',
+              'js/grid/header.js',
+              'js/grid/grid.js',
+              'js/grid/util.js',
+              'js/grid/plugins/base.js',
+              'js/grid/plugins/gridmenu.js',
+              'js/grid/plugins/cascade.js',
+              'js/grid/plugins/selection.js',
+              'js/grid/plugins/summary.js',
+              'js/grid/plugins/editing.js',
+              'js/grid/plugins/cellediting.js',
+              'js/grid/plugins/rowediting.js',
+              'js/grid/plugins/dialog.js'
             ],
             dest: 'dist/grid.js'
         }, 
         
         form : {
             src: [
-              'js/form/*.js'
+              'js/form/base.js',
+              'js/form/tips.js',
+              'js/form/field/base.js',
+              'js/form/field/text.js',
+              'js/form/field/number.js',
+              'js/form/field/hidden.js',
+              'js/form/field/readyonly.js',
+              'js/form/field/select.js',
+              'js/form/field/date.js',
+              'js/form/field/check.js',
+              'js/form/field/checkbox.js',
+              'js/form/field/radio.js',
+              'js/form/field/plain.js',
+              'js/form/field/list.js',
+              'js/form/field/checklist.js',
+              'js/form/field/radiolist.js',
+              'js/form/field.js',
+              'js/form/valid.js',
+              'js/form/groupvalid.js',
+              'js/form/fieldcontainer.js',
+              'js/form/group/base.js',
+              'js/form/group/rnge.js',
+              'js/form/group/range.js',
+              'js/form/group/check.js',
+              'js/form/group/select.js',
+              'js/form/fieldgroup.js',
+              'js/form/form.js',
+              'js/form/hform.js',
+              'js/form/row.js',
+              'js/form/rule.js',
+              'js/form/rules.js',
+              'js/form/remote.js'
+
             ],
             dest: 'dist/form.js'
         },
  
         editor : {
             src: [
-              'js/editor/*.js'
+              'js/editor/base.js',
+              'js/editor/mixin.js',
+              'js/editor/editor.js',
+              'js/editor/record.js',
+              'js/editor/dialog.js',
             ],
+
             dest: 'dist/editor.js'
         },
         
         data : {
             src: [
-              'js/data/*.js'
+              'js/data/base.js',
+              'js/data/sortable.js',
+              'js/data/proxy.js',
+              'js/data/abstractstore.js',
+              'js/data/node.js',
+              'js/data/treestore.js',
+              'js/data/store.js',
+
             ],
             dest: 'dist/data.js'
         },   
         
         cookie : {
             src: [
-              'js/cookie/*.js'
+              'js/cookie/cookie.js'
             ],
             dest: 'dist/cookie.js'
         },
         combine: {
-        	src: ['dist/*.js', 'js/all.js'],
+        	src: [
+        		'dist/loader.js', 
+        		'dist/common.js', 
+        		'dist/cookie.js', 
+        		'dist/data.js', 
+        		'dist/overlay.js', 
+        		'dist/list.js', 
+        		'dist/picker.js', 
+        		'dist/form.js', 
+        		'dist/select.js', 
+        		'dist/mask.js', 
+        		'dist/menu.js', 
+        		'dist/tab.js', 
+        		'dist/toolbar.js', 
+        		'dist/progressbar.js', 
+        		'dist/calendar.js', 
+        		'dist/editor.js', 
+        		'dist/grid.js', 
+        		'dist/tree.js', 
+        		'dist/tooltip.js', 
+        		'js/all.js'
+        	],
         	dest: 'dist/bui.js'
         },
         seed: {
