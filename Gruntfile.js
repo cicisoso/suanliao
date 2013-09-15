@@ -141,7 +141,7 @@ module.exports = function(grunt) {
               'js/select/combox.js',
               'js/select/suggest.js'
             ],
-            dest: 'distlect.js'
+            dest: 'dist/select.js'
         },
         
         progressbar : {
