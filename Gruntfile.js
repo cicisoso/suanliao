@@ -41,13 +41,24 @@ module.exports = function(grunt) {
 			stripBanners: false
 		},
 		bar: {
-			src: ['js/bar/*.js'],
+			src: [
+				'js/bar/base.js',
+				'js/bar/baritem.js',
+				'js/bar/bar.js',
+				'js/bar/pagingbar.js',
+				'js/bar/numberpagingbar.js'
+			],
 			//dest: 'dist/js/bar/<%= pkg.name %>.js'
 			dest: 'dist/toolbar.js'
 		},
 		calendar: {
 			src: [
-		  		'js/calendar/*.js'
+		  		'js/calendar/base.js',
+		  		'js/calendar/monthpicker.js',
+		  		'js/calendar/header.js',
+		  		'js/calendar/panel.js',
+		  		'js/calendar/calendar.js',
+		  		'js/calendar/datepicker.js',
 			],
 			//dest: 'dist/js/bar/<%= pkg.name %>.js'
 			dest: 'dist/calendar.js'
